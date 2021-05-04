@@ -4,8 +4,12 @@ const Product = require('../models/Product')
 module.exports = {
     async index(req, res) {
         const { page = 1 } = req.query;
-        //const products = await Product.paginate({},{page, limit: 10});
-        const products = await Product.findAndCountAll({limit: 10})
+        let limit = 10
+        let offset = 0 + (page - 1) * limit
+        const products = await Product.findAndCountAll({
+            offset: offset,
+            limit: limit
+        })
         return res.json(products);
     },
 

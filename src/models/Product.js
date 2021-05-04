@@ -1,26 +1,6 @@
-const { Sequelize, Model, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const dbConfig = require('../database');
-
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD,{
-  host: dbConfig.HOST,
-  dialect: dbConfig.dialect,
-  port: dbConfig.port,
-  pool: {
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle
-  }
-});
-
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+const sequelize = require('../database')
 
 const Product = sequelize.define('products',{
       title: DataTypes.STRING,
@@ -30,6 +10,7 @@ const Product = sequelize.define('products',{
 }, {
   tableName: 'products'
 })
+
 // COMANDO PARA CRIAR A TABELA CASO NÃO EXISTA
 // Product.sync({force: true}).then(()=>{
 //   return Product.create({
