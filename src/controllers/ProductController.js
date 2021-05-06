@@ -1,5 +1,4 @@
-const mongoose = require('../database');
-const Product = require('../models/Product')
+const { products } = require('../models')
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -7,43 +6,46 @@ module.exports = {
         const { page = 1 } = req.query;
         let limit = 10
         let offset = 0 + (page - 1) * limit
-        const products = await Product.findAndCountAll({
+        const Allproducts = await products.findAndCountAll({
             offset: offset,
             limit: limit
         })
+        let totalPages = Math.ceil(Allproducts.count / limit);
         const response = {
-            docs: [...products.rows],
+            docs: [...Allproducts.rows],
             page: page,
             productInfo: {
-                totalPages: products.count / limit,
-                totalProducts: products.count
+                totalPages: totalPages.toFixed(),
+                totalProducts: Allproducts.count
             }
         }
         return res.json(response);
     },
 
     async store(req, res) {
-        const {title, description, url, id} = req.body
-        const verifyIfExist = await Product.findOne({
-            where: {
-                [Op.or]: [
-                    {title},
-                    {id}
-                ]
+        const {title, id} = req.body
+        if (id) {
+            const verifyIfExist = await products.findOne({
+                where: {
+                    [Op.or]: [
+                        {title},
+                        {id}
+                    ]
+                }
+            })
+            if ( verifyIfExist ) {
+                return res.json({msg: "already exist"})
             }
-        })
-        if ( verifyIfExist ) {
-            return res.json({msg: "already exist"})
         }
-        const product = await Product.create(req.body);
+        const product = await products.create(req.body);
         return res.json(product);
     },
     async show(req, res){
-        const product = await Product.findByPk(req.params.id)
+        const product = await products.findByPk(req.params.id)
         return res.json(product);
     },
     async update(req, res){
-        const product = await Product.update(req.body, {
+        const product = await products.update(req.body, {
             where: {
                 id: req.params.id
             }
@@ -51,7 +53,7 @@ module.exports = {
         return res.json(product);
     },
     async destroy(req, res){
-        const product = await Product.destroy({where: {id : req.params.id}});
+        const product = await products.destroy({where: {id : req.params.id}});
         return res.json(product);
     }
 };

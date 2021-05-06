@@ -1,11 +1,14 @@
 {
-  "name": "curso-Node-Rocketseat",
+  "name": "api-rest-node",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "docker start mongodb & node src/index.js"
+    "dev": "nodemon src/index.js --ignore __tests__",
+    "start": "docker start mongodb & node src/index.js",
+    "pretest": "cross-env NODE_ENV=test sequelize db:migrate",
+    "test": "jest",
+    "posttest": "cross-env NODE_ENV=test sequelize db:migrate:undo:all"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +19,16 @@
     "express": "^4.17.1",
     "mariadb": "^2.5.3",
     "mysql2": "^2.2.5",
+    "pg": "^8.6.0",
     "require-dir": "^1.2.0",
     "sequelize": "^6.6.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "cross-env": "^7.0.3",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.7",
+    "sequelize-cli": "^6.2.0",
+    "sqlite3": "^5.0.2",
+    "supertest": "^6.1.3"
   }
 }
