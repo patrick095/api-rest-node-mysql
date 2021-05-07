@@ -2,7 +2,7 @@ const Client = require("socket.io-client");
 const app = require("../../src/app");
 
 describe("my awesome project", () => {
-    let io, clientSocket, port;
+    let io, clientSocket,client2Socket;
   beforeAll((done) => {
     server = require('http').createServer(app);
     io = require('socket.io')(server, {
@@ -12,8 +12,9 @@ describe("my awesome project", () => {
         } 
     });
     server.listen(()=>{
-        port = server.address().port;
+        const port = server.address().port;
         clientSocket = new Client(`http://localhost:${port}`);
+        client2Socket = new Client(`http://localhost:${port}`);
         require('../../src/controllers/chatController').io(io);
         clientSocket.on("connect", done);
     });
@@ -21,7 +22,8 @@ describe("my awesome project", () => {
 
   afterAll(() => {
     io.close();
-    // clientSocket.close();
+    clientSocket.close();
+    client2Socket.close();
   });
 
   it("should receive a msg", (done) => {
@@ -35,7 +37,15 @@ describe("my awesome project", () => {
       clientSocket.emit("sendMsg", {msg: "hello", author: "test"});
       clientSocket.on("newMensages", newMsgs => {
           expect(newMsgs.msgs[0].msg).toContain("hello");
+          expect(newMsgs.msgs[0].author).toContain("test");
           done();
       });
   });
+  it('should receive the mensage from a other client',(done) => {
+    client2Socket.on("newMensages", newMsgs => {
+        expect(newMsgs.msgs[0].msg).toContain("hello");
+        expect(newMsgs.msgs[0].author).toContain("test");
+        done();
+    });
+});
 });
