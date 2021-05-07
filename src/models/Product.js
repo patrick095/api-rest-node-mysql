@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) =>{
         title: DataTypes.STRING,
         description: DataTypes.STRING,
         url: DataTypes.STRING,
-        createdAt: DataTypes.DATE
+        createdAt: DataTypes.DATE,
+        updatedAt: DataTypes.DATE,
   }, {
     tableName: 'products'
   })
