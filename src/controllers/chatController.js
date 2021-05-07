@@ -40,13 +40,21 @@ module.exports = {
                 }
                 const olderMsgs = {...dbMsgs.dataValues, msgs };
                 //comando para apagar as mensagens
-                if (msg.msg === 'delAllMsg') {
+                if (msg.msg === '/delAllMsg') {
                     olderMsgs.msgs = []
                     const newMsgs = await chat.update({msgs: olderMsgs.msgs}, {
                         where: {
                             id: 1
                         }
                     })
+                    return io.emit('newMensages', olderMsgs)
+                }
+                else if (msg.msg === '/ajuda') {
+                    olderMsgs.msgs = [
+                        {msg:'Para ajuda digite "/ajuda"', author: 'Sistema'},
+                        {msg:'Para apagar seu nome digite "/delName"', author: 'Sistema'},
+                        {msg:'Para apagar todas as mensagens digite "/delAllMsg"', author: 'Sistema'},
+                    ]
                     return io.emit('newMensages', olderMsgs)
                 }
                 if (!msg.author) {
