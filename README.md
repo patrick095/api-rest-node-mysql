@@ -85,4 +85,4 @@ socket.on('newMensages', res => console.log(res));
 
 # Frontend React criado para consumir essa API
 
-[My-first-ReactApp](https://github.com/patrick095/My-First-ReactApp)
+[ReactApp](https://github.com/patrick095/My-First-ReactApp)
